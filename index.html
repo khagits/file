@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Local 5-Module Website (with Bot)</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">
+        <span class="logo">⬣</span>
+        <span>Local Workspace</span>
+    </div>
+
+    <!-- Clickable LINKS (hash routes) -->
+    <nav class="nav" aria-label="Primary">
+        <a class="nav-link" href="#dashboard" data-route="dashboard" aria-current="page">Dashboard</a>
+        <a class="nav-link" href="#tasks" data-route="tasks">Tasks</a>
+        <a class="nav-link" href="#notes" data-route="notes">Notes</a>
+        <a class="nav-link" href="#budget" data-route="budget">Budget</a>
+        <a class="nav-link" href="#bot" data-route="bot">Bot</a>
+    </nav>
+</header>
+
+<main class="container">
+    <!-- DASHBOARD -->
+    <section class="view" id="view-dashboard" data-view>
+        <h1>Dashboard</h1>
+        <p class="muted">A quick overview of your local data.</p>
+
+        <div class="grid cards">
+            <div class="card">
+                <h3>Tasks</h3>
+                <div class="big" id="dash-tasks-total">0</div>
+                <div class="muted" id="dash-tasks-done">0 completed</div>
+                <button class="btn small" data-jump="tasks">Open Tasks</button>
+            </div>
+
+            <div class="card">
+                <h3>Notes</h3>
+                <div class="big" id="dash-notes-total">0</div>
+                <div class="muted">saved notes</div>
+                <button class="btn small" data-jump="notes">Open Notes</button>
+            </div>
+
+            <div class="card">
+                <h3>Budget</h3>
+                <div class="big" id="dash-budget-balance">$0.00</div>
+                <div class="muted" id="dash-budget-lines">0 entries</div>
+                <button class="btn small" data-jump="budget">Open Budget</button>
+            </div>
+
+            <div class="card">
+                <h3>Bot</h3>
+                <div class="big">🤖</div>
+                <div class="muted">Offline helper</div>
+                <button class="btn small" data-jump="bot">Open Bot</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Recent Activity</h3>
+            <ul class="list" id="dash-recent"></ul>
+            <p class="muted" id="dash-recent-empty">No activity yet.</p>
+        </div>
+    </section>
+
+    <!-- TASKS -->
+    <section class="view" id="view-tasks" data-view hidden>
+        <div class="row space">
+            <div>
+                <h1>Tasks</h1>
+                <p class="muted">Add tasks, mark complete, edit, delete. Stored locally.</p>
+            </div>
+            <div class="row">
+                <input class="input" id="tasks-search" placeholder="Search tasks…" />
+                <select class="input" id="tasks-filter" title="Filter">
+                    <option value="all">All</option>
+                    <option value="open">Open</option>
+                    <option value="done">Completed</option>
+                </select>
+            </div>
+        </div>
+
+        <form class="card" id="tasks-form">
+            <h3>Add Task</h3>
+            <div class="grid form-grid">
+                <input class="input" id="task-title" placeholder="Title (required)" required />
+                <input class="input" id="task-tag" placeholder="Tag (optional) e.g. Work" />
+                <select class="input" id="task-priority" title="Priority">
+                    <option value="low">Low</option>
+                    <option value="med" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <button class="btn" type="submit">Add</button>
+            </div>
+        </form>
+
+        <div class="card">
+            <div class="row space">
+                <h3>Task List</h3>
+                <div class="muted" id="tasks-meta"></div>
+            </div>
+            <ul class="list" id="tasks-list"></ul>
+            <p class="muted" id="tasks-empty">No tasks yet.</p>
+        </div>
+    </section>
+
+    <!-- NOTES -->
+    <section class="view" id="view-notes" data-view hidden>
+        <div class="row space">
+            <div>
+                <h1>Notes</h1>
+                <p class="muted">Create and manage notes locally.</p>
+            </div>
+            <input class="input" id="notes-search" placeholder="Search notes…" />
+        </div>
+
+        <form class="card" id="notes-form">
+            <h3>New Note</h3>
+            <div class="grid notes-grid">
+                <input class="input" id="note-title" placeholder="Title (required)" required />
+                <textarea class="input" id="note-body" placeholder="Write your note…" rows="4" required></textarea>
+                <button class="btn" type="submit">Save Note</button>
+            </div>
+        </form>
+
+        <div class="grid cards" id="notes-list"></div>
+        <p class="muted" id="notes-empty">No notes yet.</p>
+    </section>
+
+    <!-- BUDGET -->
+    <section class="view" id="view-budget" data-view hidden>
+        <div class="row space">
+            <div>
+                <h1>Budget</h1>
+                <p class="muted">Track income & expenses. Stored locally.</p>
+            </div>
+            <div class="row">
+                <select class="input" id="budget-filter">
+                    <option value="all">All</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+            </div>
+        </div>
+
+        <form class="card" id="budget-form">
+            <h3>Add Entry</h3>
+            <div class="grid form-grid">
+                <select class="input" id="budget-type">
+                    <option value="income">Income</option>
+                    <option value="expense" selected>Expense</option>
+                </select>
+                <input class="input" id="budget-label" placeholder="Label (required) e.g. Groceries" required />
+                <input class="input" id="budget-amount" type="number" step="0.01" placeholder="Amount (required)" required />
+                <button class="btn" type="submit">Add</button>
+            </div>
+        </form>
+
+        <div class="grid cards">
+            <div class="card">
+                <h3>Total Income</h3>
+                <div class="big" id="budget-income">$0.00</div>
+            </div>
+            <div class="card">
+                <h3>Total Expense</h3>
+                <div class="big" id="budget-expense">$0.00</div>
+            </div>
+            <div class="card">
+                <h3>Balance</h3>
+                <div class="big" id="budget-balance">$0.00</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="row space">
+                <h3>Entries</h3>
+                <div class="muted" id="budget-meta"></div>
+            </div>
+            <ul class="list" id="budget-list"></ul>
+            <p class="muted" id="budget-empty">No budget entries yet.</p>
+        </div>
+    </section>
+
+    <!-- BOT -->
+    <section class="view" id="view-bot" data-view hidden>
+        <div class="row space">
+            <div>
+                <h1>Bot</h1>
+                <p class="muted">Offline assistant. It can add tasks/notes/budget with simple commands.</p>
+            </div>
+            <button class="btn danger small" id="bot-clear">Clear Chat</button>
+        </div>
+
+        <div class="card bot-shell">
+            <div class="bot-messages" id="bot-messages" aria-live="polite"></div>
+
+            <div class="bot-hints">
+                <div class="pill">help</div>
+                <div class="pill">stats</div>
+                <div class="pill">add task: Buy milk</div>
+                <div class="pill">add note: Title | Body text</div>
+                <div class="pill">add expense: Groceries | 12.50</div>
+                <div class="pill">add income: Salary | 1000</div>
+            </div>
+
+            <form class="bot-inputrow" id="bot-form">
+                <input class="input" id="bot-input" placeholder="Type a message or command…" autocomplete="off" />
+                <button class="btn" type="submit">Send</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <span class="muted">Local-only • Stored in your browser • No server needed</span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
